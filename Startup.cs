@@ -36,10 +36,20 @@ namespace blazorblog
                 options.UseNpgsql(
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<User>(
-                  options => options.SignIn.RequireConfirmedAccount = true)
+                  options => options.SignIn.RequireConfirmedAccount = false)
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<blogContext>();
+            services.Configure<IdentityOptions>(options =>  
+            {  
+                // Password settings.  
+                options.Password.RequireDigit = true;  
+                options.Password.RequireLowercase = false;  
+                options.Password.RequireNonAlphanumeric = false;  
+                options.Password.RequireUppercase = false;  
+                options.Password.RequiredLength = 6;  
 
+            });  
+  
 
             services.AddRazorPages();
             services.AddServerSideBlazor();
@@ -65,8 +75,12 @@ namespace blazorblog
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
-            app.UseRouting();
+      
+           app.UseRouting();
+                  
             app.UseAuthentication();
+            app.UseAuthorization();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
