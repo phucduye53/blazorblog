@@ -14,6 +14,9 @@ namespace blazorblog.Context
         {
         }
 
+        public virtual DbSet<Blog> Blogs {get;set;}
+        public virtual DbSet<Category> Categories {get;set;}
+        public virtual DbSet<Comment> Comments {get;set;}
 
         public override int SaveChanges()
         {
