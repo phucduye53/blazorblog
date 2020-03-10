@@ -38,7 +38,7 @@ namespace blazorblog.Data
                 Name = p.Name
             }).OrderBy(p=>p.Name);
 
-            return await Method.EntityWithPaging<CategoryDto>(orderQuery, totalSize, page, Constant.PageSize);
+            return await Method.EntityWithPaging<CategoryDto>(orderQuery, totalSize, page-1 , Constant.PageSize);
         }
 
 

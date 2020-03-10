@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading;
 using blazorblog.Entity;
 using blazorblog.Entity.AbstractClass;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -16,7 +17,7 @@ namespace blazorblog.Context
 
         public virtual DbSet<Blog> Blogs {get;set;}
         public virtual DbSet<Category> Categories {get;set;}
-        public virtual DbSet<Comment> Comments {get;set;}
+        public virtual DbSet<BlogCategory> Comments {get;set;}
 
         public override int SaveChanges()
         {
@@ -29,8 +30,7 @@ namespace blazorblog.Context
                 IAuditableEntity entity = entry.Entity as IAuditableEntity;
                 if (entity != null)
                 {
-                    //   string identityName = Thread.CurrentPrincipal.Identity.Name; HANDLE LATER
-                    string identityName = "admin";
+                    string identityName = System.Security.Claims.ClaimsPrincipal.Current.Identity.Name; 
                     DateTime now = DateTime.UtcNow;
 
                     if (entry.State == Microsoft.EntityFrameworkCore.EntityState.Added)
