@@ -8,7 +8,7 @@ namespace blazorblog.Helpers
 {
     public interface IPagedEntities<out T>
     {
-         int Page {get;}
+        int Page {get;}
         int TotalSize { get; }
         
         int PageSize { get; }
@@ -25,14 +25,15 @@ namespace blazorblog.Helpers
 
         public PagedEntities()
         {
-         
+            Entities = new List<T>();
+            TotalSize = 0;
         }
         public PagedEntities(int page,int pageSize,int totalSize ,List<T> entities)
         {
             Page = page;
             PageSize = pageSize;
             TotalSize = totalSize;
-            Entities = Entities;
+            Entities = entities;
         }
     }
 

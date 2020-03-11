@@ -1,0 +1,153 @@
+@page "/administration"
+
+@using Microsoft.AspNetCore.Identity;
+@using blazorblog.Helpers;
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IConfiguration _configuration
+
+@inherits AdministrationModel
+
+<AuthorizeView>
+    <Authorized>
+        @if (@context.User.IsInRole(Constant.ADMINISTRATION_ROLE))
+        {
+            @if (ColUsers == null)
+            {
+                <p><em>Loading...</em></p>
+            }
+            else
+            {
+                <table class="table">
+                    <tr>
+                        <th colspan="2"><h3>Administration</h3></th>
+                        <th colspan="2">
+                            <RadzenTextBox Placeholder="Search..."
+                                           @oninput="@(args => Search(args.Value.ToString(), "Search"))" />
+                        </th>
+                    </tr>
+                </table>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>User Name</th>
+                            <th>Email</th>
+                            <th>PhoneNumber</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in ColUsers.Entities)
+                        {
+                        <tr>
+                            <td>@user.UserName</td>
+                            <td>@user.Email</td>
+                            <td>@user.PhoneNumber</td>
+                            <td>
+                                <!-- Edit the current forecast -->
+                                <button class="btn btn-primary"
+                                        @onclick="(() => EditUser(user))">
+                                    Edit
+                                </button>
+                            </td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+                <p>
+                    <button class="btn btn-success" @onclick="AddNewUser">Add User</button>
+                    @if (ShowPreviousButton)
+                    {
+                        <button class="btn btn-warning"
+                                @onclick="Previous">
+                            <b>&#x3C;</b>
+                        </button>
+                    }
+                    @if (ShowNextButton)
+                    {
+                        <button class="btn btn-warning"
+                                @onclick="Next">
+                            <b>&#x3E;</b>
+                        </button>
+                    }
+                </p>
+            }
+            @if (ShowPopup)
+            {
+                <!-- This is the popup to create or edit a user -->
+                <div class="modal" tabindex="-1" style="display:block" role="dialog">
+                    <div class="modal-dialog-scrollable modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3 class="modal-title">Edit User</h3>
+                                <!-- Button to close the popup -->
+                                <button type="button" class="close"
+                                        @onclick="ClosePopup">
+                                    <span aria-hidden="true">X</span>
+                                </button>
+                            </div>
+                            <!-- Edit form for the current forecast -->
+                            <div class="modal-body">
+                                <!-- Only allow edit if a new user -->
+                                <b>User Name</b>
+                                @if (objUser.Id != "")
+                                {
+                                    <p>@objUser.UserName</p>
+                                }
+                                else
+                                {
+                                    <input class="form-control" type="text"
+                                           @bind="objUser.UserName" /><br />
+                                }
+                                <b>Phone Number</b>
+                                <input class="form-control" type="text"
+                                       @bind="objUser.PhoneNumber" />
+                                <br /><b>Email</b>
+                                <input class="form-control" type="text"
+                                       placeholder="Email"
+                                       @bind="objUser.Email" />
+          
+            
+                                <br /><b>Role</b>
+                                <select class="form-control"
+                                        @bind="@CurrentUserRole">
+                                    @foreach (var option in Options)
+                                    {
+                                        <option value="@option">
+                                            @option
+                                        </option>
+                                    }
+                                </select>
+                                 <br />
+                                <!-- Button to save the user -->
+                                <button class="btn btn-primary"
+                                        @onclick="SaveUser">
+                                    Save
+                                </button>
+                                <!-- Only show delete button if not a new record -->
+                                <!-- and not the current user -->
+                                @if (objUser.Id != "" && objUser.UserName.ToLower() != @context.User.Identity.Name.ToLower())
+                                {
+                                    <!-- Button to delete the forecast -->
+                                    <button class="btn btn-danger"
+                                            @onclick="DeleteUser">
+                                        Delete
+                                    </button>
+                                }
+                                <br />
+                                <span style="color:red">@strError</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <p>You are not signed in as a user in @Constant.ADMINISTRATION_ROLE</p>
+        }
+    </Authorized>
+    <NotAuthorized>
+        <h3>Administration</h3>
+        <p>You are not logged in.</p>
+    </NotAuthorized>
+</AuthorizeView>
