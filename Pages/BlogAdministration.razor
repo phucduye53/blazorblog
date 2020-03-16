@@ -1,0 +1,187 @@
+@inherits BlogAdministrationModel
+
+@if (ShowAdmin)
+{
+    <div class="modal" tabindex="-1" style="display:block;background-color:gainsboro" role="dialog">
+        <div class="modal-dialog-scrollable modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Edit Blog</h3>
+                    <!-- Button to close the popup -->
+                    <button type="button" class="close"
+                            @onclick="ClosePopup">
+                        <span aria-hidden="true">X</span>
+                    </button>
+                </div>
+                <!-- Edit form for the current Blog -->
+                <div class="modal-body">
+                    <div class="form-group">
+                        <input class="form-control" type="date"
+                               @bind="SelectedBlog.CreatedDate" />
+                    </div>
+                    <div>
+                        <h5>Categories <button type="button" class="btn btn-link" @onclick="OpenCategoryManagerControl">[Edit]</button></h5>
+                    </div>
+                    <div class="form-group">
+                        <RadzenDropDown AllowClear="true"
+                                        AllowFiltering="true"
+                                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                        @bind-Value="selectedBlogCategories" Multiple="true"
+                                        Placeholder="Select..."
+                                        Data="@categories" TextProperty="Title"
+                                        ValueProperty="CategoryId"
+                                        Style="width:400px;" />
+                    </div>
+                    <h5>Title</h5>
+                    <div class="form-group">
+                        <input class="form-control" type="text"
+                               @bind="SelectedBlog.Title" />
+                    </div>
+                    <h5>Summary</h5>
+                    <div class="form-group">
+                        @if (!RichTextEditorModeSummary)
+                        {
+                            <textarea class="form-control" @bind="@SelectedBlog.Summary" rows="2" />
+                        }
+                        else
+                        {
+                            <BlazoredTextEditor @ref="@QuillHtmlSummary">
+                                <ToolbarContent>
+                                    <select class="ql-header">
+                                        <option selected=""></option>
+                                        <option value="1"></option>
+                                        <option value="2"></option>
+                                        <option value="3"></option>
+                                        <option value="4"></option>
+                                        <option value="5"></option>
+                                    </select>
+                                    <span class="ql-formats">
+                                        <button class="ql-bold"></button>
+                                        <button class="ql-italic"></button>
+                                        <button class="ql-underline"></button>
+                                        <button class="ql-strike"></button>
+                                    </span>
+                                    <span class="ql-formats">
+                                        <select class="ql-color"></select>
+                                        <select class="ql-background"></select>
+                                    </span>
+                                    <span class="ql-formats">
+                                        <button class="ql-list" value="ordered"></button>
+                                        <button class="ql-list" value="bullet"></button>
+                                    </span>
+                   
+                                </ToolbarContent>
+                                <EditorContent>
+                                    @((MarkupString)SelectedBlog.Summary)
+                                </EditorContent>
+                            </BlazoredTextEditor>
+                        }
+                        @if (!RichTextEditorModeSummary)
+                        {
+                            <button type="button" class="btn btn-link" @onclick="RichTextEditorSummary"><h6>[Rich Text Editor]</h6></button>
+                        }
+                        else
+                        {
+                            <button type="button" class="btn btn-link" @onclick="RawHTMLEditorSummary"><h6>[Raw HTML Editor]</h6></button>
+                        }
+                    </div>
+                    <h5>Content</h5>
+                    <div class="form-group">
+                        @if (!RichTextEditorMode)
+                        {
+                            <textarea class="form-control" @bind="@SelectedBlog.Content" rows="5" />
+                        }
+                        else
+                        {
+                            <BlazoredTextEditor @ref="@QuillHtml">
+                                <ToolbarContent>
+                                    <select class="ql-header">
+                                        <option selected=""></option>
+                                        <option value="1"></option>
+                                        <option value="2"></option>
+                                        <option value="3"></option>
+                                        <option value="4"></option>
+                                        <option value="5"></option>
+                                    </select>
+                                    <span class="ql-formats">
+                                        <button class="ql-bold"></button>
+                                        <button class="ql-italic"></button>
+                                        <button class="ql-underline"></button>
+                                        <button class="ql-strike"></button>
+                                    </span>
+                                    <span class="ql-formats">
+                                        <select class="ql-color"></select>
+                                        <select class="ql-background"></select>
+                                    </span>
+                                    <span class="ql-formats">
+                                        <button class="ql-list" value="ordered"></button>
+                                        <button class="ql-list" value="bullet"></button>
+                                    </span>
+                            
+                                </ToolbarContent>
+                                <EditorContent>
+                                    @((MarkupString)SelectedBlog.Content)
+                                </EditorContent>
+                            </BlazoredTextEditor>
+                        }
+                        @if (!RichTextEditorMode)
+                        {
+                            <button type="button" class="btn btn-link" @onclick="RichTextEditor"><h6>[Rich Text Editor]</h6></button>
+                        }
+                        else
+                        {
+                            <button type="button" class="btn btn-link" @onclick="RawHTMLEditor"><h6>[Raw HTML Editor]</h6></button>
+                        }
+                    </div>
+                    <br />
+                    <!-- Button to save the user -->
+                    <button class="btn btn-primary"
+                            @onclick="SaveBlog">
+                        Save
+                    </button>
+                    <!-- Only show delete button if not a new record -->
+                    @if (SelectedBlog.Id.ToString() != "0")
+                    {
+                        <!-- Button to delete the Blog -->
+                        <button class="btn btn-danger"
+                                @onclick="DeleteBlog">
+                            Delete
+                        </button>
+                    }
+                    <br />
+                    <span style="color:red">@strError</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (ConFirmDeletePopup)
+    {
+        <div class="modal" tabindex="-1" style="display:block;background-color:gainsboro" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Delete Blog Post?</h3>
+                    </div>
+                    <div class="modal-body">
+                        <button class="btn btn-primary"
+                                @onclick="DeleteYes">
+                            Yes
+                        </button>
+                        <button class="btn btn-danger"
+                                @onclick="DeleteNo">
+                            No
+                        </button>
+                        <br />
+                        <span style="color: red">@strError</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+
+
+    <Category @ref="CategoryManagerControl"
+                     CategoryUpdated="UpdateCategories" />
+}

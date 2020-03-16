@@ -16,6 +16,11 @@ using Microsoft.AspNetCore.Identity;
 using blazorblog.Entity;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server;
+using blazorblog.Helpers;
+using blazorblog.Data.Dto;
+using Blazored.Toast;
+using Toolbelt.Blazor.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Http;
 
 namespace blazorblog
 {
@@ -34,7 +39,7 @@ namespace blazorblog
         {
             services.AddDbContext<blogContext>(options =>
                 options.UseNpgsql(
-                    Configuration.GetConnectionString("DefaultConnection")));
+                    Configuration.GetConnectionString("DefaultConnection")),ServiceLifetime.Transient);
             services.AddDefaultIdentity<User>(
                   options => options.SignIn.RequireConfirmedAccount = false)
                 .AddRoles<IdentityRole>()
@@ -57,6 +62,16 @@ namespace blazorblog
 
             services.AddScoped<BlogService>();
             services.AddScoped<UserService>();
+            services.AddScoped<CategoryService>();
+             services.AddScoped<DisqusState>();
+             services.AddScoped<BlogSearchState>();
+          
+            services.AddHttpContextAccessor();
+            services.AddScoped<HttpContextAccessor>();
+               services.AddBlazoredToast();
+            services.AddHeadElementHelper();
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

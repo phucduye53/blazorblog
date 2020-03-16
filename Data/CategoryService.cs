@@ -18,14 +18,15 @@ namespace blazorblog.Data
             _context = context;
 
         }
-        public async Task<List<CategoryDto>> GetCategorysAsync()
+        public  Task<List<CategoryDto>> GetCategorysAsync()
         {
-            return await (from category in _context.Categories
-                          select new CategoryDto
+            var result =    _context.Categories.Select(p=>
+                          new CategoryDto
                           {
-                              CategoryId = category.Id,
-                              Name = category.Name
+                              CategoryId = p.Id,
+                              Name = p.Name
                           }).AsNoTracking().OrderBy(p => p.Name).ToListAsync();
+            return result;
         }
         public async Task<IPagedEntities<CategoryDto>> GetCategoriesAsync(int page)
         {
