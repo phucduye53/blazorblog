@@ -1,9 +1,12 @@
 using System;
 using System.Linq;
 using System.Threading;
+using blazorblog.Data;
 using blazorblog.Entity;
 using blazorblog.Entity.AbstractClass;
 using blazorblog.Helpers;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -12,11 +15,12 @@ namespace blazorblog.Context
 {
     public partial class blogContext : IdentityDbContext<User>
     {
-        public blogContext(DbContextOptions<blogContext> options)
+        public blogContext(DbContextOptions<blogContext> options,UserResolverService _service)
        : base(options)
         {
+            _curUser = _service.GetUser();
         }
-
+        private string _curUser {get;set;}
         public virtual DbSet<Blog> Blogs { get; set; }
         public virtual DbSet<Category> Categories { get; set; }
         public virtual DbSet<BlogCategory> Comments { get; set; }
@@ -32,7 +36,7 @@ namespace blazorblog.Context
                 IAuditableEntity entity = entry.Entity as IAuditableEntity;
                 if (entity != null)
                 {
-                    string identityName = System.Security.Claims.ClaimsPrincipal.Current.Identity.Name;
+                    string identityName = _curUser;
                     DateTime now = DateTime.UtcNow;
 
                     if (entry.State == Microsoft.EntityFrameworkCore.EntityState.Added)

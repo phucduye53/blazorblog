@@ -11,7 +11,7 @@
                 FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                 @bind-Value="BlogSearchState.CurrentCategoryID" Multiple="false"
                 Placeholder="Search Category..."
-                Data="@categories" TextProperty="Title"
+                Data="@categories" TextProperty="Name" 
                 ValueProperty="CategoryId"
                 Style="width:200px;"
                 Change="@(args => ChangeCategory(args, "DropDown"))" />

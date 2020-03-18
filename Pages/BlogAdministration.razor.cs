@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using blazorblog.Data;
 using blazorblog.Data.Dto;
@@ -12,7 +13,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace blazorblog.Pages
 {
-    public class BlogAdministrationModel : ComponentBase
+    public class BlogAdministrationModel : ComponentBase, IDisposable
     {
         [Inject]
         protected UserManager<User> _userManager { get; set; }
@@ -26,12 +27,14 @@ namespace blazorblog.Pages
         private Task<AuthenticationState> authenticationStateTask { get; set; }
 
         [Parameter] public EventCallback<bool> BlogUpdated { get; set; }
+        protected bool disposedValue = false; // To detect redundant calls
+        protected readonly CancellationTokenSource cts = new CancellationTokenSource();
 
         protected BlogDto SelectedBlog;
         public bool ShowAdmin = false;
         public bool ConFirmDeletePopup = false;
 
-        protected  System.Security.Claims.ClaimsPrincipal CurrentUser;
+        protected System.Security.Claims.ClaimsPrincipal CurrentUser;
         protected CategoryModel CategoryManagerControl;
 
         protected BlazoredTextEditor QuillHtmlSummary;
@@ -259,5 +262,25 @@ namespace blazorblog.Pages
 
         //     var result = await @Service.CreateLogAsync(objLog);
         // }
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    cts.Dispose();
+                }
+
+                disposedValue = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            // TODO: uncomment the following line if the finalizer is overridden above.
+            // GC.SuppressFinalize(this);
+        }
     }
+
 }
