@@ -61,24 +61,24 @@ namespace blazorblog.Pages
             }
         }
 
-        protected override async Task OnAfterRenderAsync(bool firstRender)
-        {
-            if (firstRender)
-            {
-                // if (Convert.ToBoolean(objGeneralSettings.DisqusEnabled))
-                // {
-                //     string url = NavigationManager.ToAbsoluteUri($"/ViewBlogPost/{BlogPostId}").AbsoluteUri;
+        // protected override async Task OnAfterRenderAsync(bool firstRender)
+        // {
+        //     if (firstRender)
+        //     {
+        //         // if (Convert.ToBoolean(objGeneralSettings.DisqusEnabled))
+        //         // {
+        //         //     string url = NavigationManager.ToAbsoluteUri($"/ViewBlogPost/{BlogPostId}").AbsoluteUri;
 
-                //     await DisqusInterop.ResetDisqus(
-                //         JSRuntime,
-                //         BlogPostId.ToString(),
-                //         url,
-                //         SelectedBlog.BlogTitle);
+        //         //     await DisqusInterop.ResetDisqus(
+        //         //         JSRuntime,
+        //         //         BlogPostId.ToString(),
+        //         //         url,
+        //         //         SelectedBlog.BlogTitle);
 
-                //     DisqusState.SetDisplayDisqus(true);
-                // }
-            }
-        }
+        //         //     DisqusState.SetDisplayDisqus(true);
+        //         // }
+        //     }
+        // }
 
         protected void EditBlog()
         {
