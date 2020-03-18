@@ -52,7 +52,7 @@ namespace blazorblog.Pages
         }
         protected bool UserIsAnAdmin = false;
         protected System.Security.Claims.ClaimsPrincipal CurrentUser;
-        protected BlogAdministration BlogAdministrationControl;
+        protected BlogAdministrationModel BlogAdministrationControl;
         protected bool disposedValue = false; // To detect redundant calls
         protected readonly CancellationTokenSource cts = new CancellationTokenSource();
         protected override async Task OnInitializedAsync()
@@ -62,9 +62,9 @@ namespace blazorblog.Pages
                 BlogSearchState.CurrentPage = 1;
             }
 
-            if (BlogSearchState.CurrentCategoryID == null)
+            if (BlogSearchState.CurrentCategoryID == 0)
             {
-                BlogSearchState.CurrentCategoryID = "0";
+                BlogSearchState.CurrentCategoryID = 0;
             }
 
             // ensure there is a ADMINISTRATION_ROLE
@@ -114,7 +114,7 @@ namespace blazorblog.Pages
         protected async Task ChangeCategory(object value, string name)
         {
             BlogSearchState.CurrentPage = 1;
-            BlogSearchState.CurrentCategoryID = (value == null) ? "0" : value.ToString();
+            BlogSearchState.CurrentCategoryID = (value == null) ? 0 : Convert.ToInt32(value);
             await BlogUpdatedEvent();
         }
 

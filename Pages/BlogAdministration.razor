@@ -117,7 +117,13 @@
                                         <button class="ql-list" value="ordered"></button>
                                         <button class="ql-list" value="bullet"></button>
                                     </span>
-                            
+                                    <span class="ql-formats">
+                                        <button class="ql-link"></button>
+                                        <button class="btn btn-link" id="custom-button"
+                                                @onclick="InsertImageClick">
+                                            <img src="imageIcon.png" style="border:hidden" />
+                                        </button>
+                                    </span>
                                 </ToolbarContent>
                                 <EditorContent>
                                     @((MarkupString)SelectedBlog.Content)
@@ -181,7 +187,8 @@
     }
 
 
-
+     <FileManager @ref="FileManagerControl"
+                    ImageSelected="InsertImage" />
     <Category @ref="CategoryManagerControl"
                      CategoryUpdated="UpdateCategories" />
 }

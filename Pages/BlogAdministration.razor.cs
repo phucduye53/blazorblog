@@ -36,7 +36,7 @@ namespace blazorblog.Pages
 
         protected System.Security.Claims.ClaimsPrincipal CurrentUser;
         protected CategoryModel CategoryManagerControl;
-
+        protected FileManagerModel FileManagerControl;
         protected BlazoredTextEditor QuillHtmlSummary;
         protected BlazoredTextEditor QuillHtml;
         protected bool RichTextEditorMode = true;
@@ -248,7 +248,16 @@ namespace blazorblog.Pages
         {
             categories = await _categoryService.GetCategorysAsync();
         }
+        protected async Task InsertImage(string paramImageURL)
+        {
+            await this.QuillHtml.InsertImage(paramImageURL);
+            FileManagerControl.SetShowFileManager(false);
+        }
 
+        protected void InsertImageClick()
+        {
+            FileManagerControl.SetShowFileManager(true);
+        }
         // private async Task LogAction(string strAction)
         // {
         //     // Get the current user

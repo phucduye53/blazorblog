@@ -1,0 +1,33 @@
+@page "/ViewBlogPost/{NormalizeTitle}"
+@inherits ViewBlogPostModel
+
+@if (SelectedBlog.Id != 0)
+{
+    <Title>@SelectedBlog.Title</Title>
+    <Meta Property="og:url" Content="@AbsoluteUrlOfThisPage" />
+    <Meta Property="og:title" Content="@SelectedBlog.Title" />
+    <h4>
+        <button type="button" class="btn btn-primary" @onclick="Back">[Back]</button>
+        @if (UserIsAdminOfBlogPost)
+        {
+            <button type="button" class="btn btn-secondary" @onclick="EditBlog">[Edit Blog]</button>
+        }
+    </h4>
+    <br />
+    <i>@SelectedBlog.CreatedDate.ToShortDateString()</i>
+    <span><b>@SelectedBlog.UserName</b></span>
+    <div>
+        <h1>@SelectedBlog.Title</h1>
+    </div>
+    <hr />
+    <div>
+        <div>
+            @((MarkupString)SelectedBlog.Content)
+        </div>
+    </div>
+    <BlogAdministration @ref="BlogAdministrationControl" BlogUpdated="BlogUpdatedEvent" />
+}
+else
+{
+    <RadzenProgressBar Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" Style="margin-bottom: 20px" />
+}

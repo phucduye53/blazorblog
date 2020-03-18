@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using blazorblog.Context;
@@ -9,9 +10,10 @@ using blazorblog.Context;
 namespace blazorblog.Migrations
 {
     [DbContext(typeof(blogContext))]
-    partial class blogContextModelSnapshot : ModelSnapshot
+    [Migration("20200318121545_changetablename")]
+    partial class changetablename
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -202,7 +204,12 @@ namespace blazorblog.Migrations
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("timestamp without time zone");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Blogs");
                 });
@@ -357,14 +364,14 @@ namespace blazorblog.Migrations
                         {
                             Id = "a18be9c0-aa65-4af8-bd17-00bd9344e575",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "9537f65c-2dca-4b59-92b7-ee7f714bec87",
+                            ConcurrencyStamp = "a77f527a-7bbb-45ab-afd4-67fbb401edd4",
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "admin@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "admin@gmail.com",
                             NormalizedUserName = "admin@gmail.com",
-                            PasswordHash = "AQAAAAEAACcQAAAAEFnKqqxnPENcGH3ibMAdKAY0YQ7/ggaR4K/Xu9dreJE4RYcalt8o+WocTtCYPhuw6g==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEL/ABDXpfw3KHw7legAdjW/rGi+4BASU2qzssm2rAaSS+TcdTm2dClgkgEMxTwzKvQ==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             TwoFactorEnabled = false,
@@ -422,6 +429,13 @@ namespace blazorblog.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("blazorblog.Entity.Blog", b =>
+                {
+                    b.HasOne("blazorblog.Entity.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("blazorblog.Entity.BlogCategory", b =>

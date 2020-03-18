@@ -18,16 +18,14 @@ namespace blazorblog.Entity
         public string Summary {get;set;}
 
         public ICollection<BlogCategory> Categories { get; set; }
-        public string UserId {get;set;}
-        [ForeignKey("UserId")]
-        public User User {get;set;}
+
 
         public Blog(){}
         public Blog(BlogDto dto, IEnumerable<int> BlogCatagories)
         {
      
             Title = dto.Title;
-            UserId = dto.UserId;
+      
             NormalizeTitle = Method.CustomNormalized(dto.Title);
             Content = dto.Content;
             Summary=dto.Summary;
@@ -46,7 +44,7 @@ namespace blazorblog.Entity
         public Blog Update(BlogDto dto, IEnumerable<int> BlogCatagories)
         {
             Title = dto.Title;
-            UserId = dto.UserId;
+      
             NormalizeTitle = Method.CustomNormalized(dto.Title);
             Content = dto.Content;
             Summary=dto.Summary;

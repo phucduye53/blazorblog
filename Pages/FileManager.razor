@@ -1,0 +1,122 @@
+
+@inherits FileManagerModel
+@if (ShowFileManager)
+{
+    <div class="modal" tabindex="-1" style="display:block" role="dialog">
+        <div class="modal-dialog-scrollable modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <b class="modal-title">Insert Image</b>
+                    <!-- Close Button -->
+                    <button type="button" class="close"
+                            @onclick="() => { ShowFileManager = false; }">
+                        <span aria-hidden="true">X</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <RadzenUpload ChooseText="Upload Files" Multiple="true"
+                                      Accept="image/*"
+                                      Url=@($"/api/upload/multiple?CurrentDirectory={CurrentDirectory}")
+                                      Style="margin-bottom: 20px;height: 45px"
+                                      Progress="@((args) => OnProgress(args))" />
+
+                        <RadzenSplitButton Click="(args) => FolderAction(args)"
+                                           Text="Folder"
+                                           ButtonStyle="ButtonStyle.Info"
+                                           Style="margin-bottom: 20px;height: 35px">
+                            <ChildContent>
+                                <RadzenSplitButtonItem Text="Add Folder" Value="Add" />
+                                <RadzenSplitButtonItem Text="Delete Folder" Value="Delete" />
+                            </ChildContent>
+                        </RadzenSplitButton>
+
+                        <RadzenButton Disabled="@(SelectedFile.FileName == null)"
+                                      Text="Delete"
+                                      Click="DeleteSelectedFile"
+                                      ButtonStyle="ButtonStyle.Danger"
+                                      Style="margin-bottom: 20px;height: 35px" />
+
+                        <RadzenButton Disabled="@(SelectedFile.FileName == null)"
+                                      Text="Select"
+                                      Click="SelectFile"
+                                      ButtonStyle="ButtonStyle.Success"
+                                      Style="margin-bottom: 20px;height: 35px" />
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4" style="margin-bottom: 16px">
+                            <RadzenTree Change="@LogChange" Data="@Directories"
+                                        Expand="@LoadDirectory"
+                                        Style="width: 100%; height: 300px">
+                                <RadzenTreeLevel Text="@GetTextForNode"
+                                                 Template="@FileOrFolderTemplate" />
+                            </RadzenTree>
+                        </div>
+                        <div class="col-md-8" style="margin-bottom: 16px">
+                            <RadzenDataList @ref="FileDataList" Data="@Files"
+                                            AllowPaging="true" TItem="Controllers.FileObject"
+                                            WrapItems="true" PageSize="6">
+                                <Template Context="file">
+                                    <RadzenImage Path="@file.FilePath"
+                                                 Style="@((file.FileName == SelectedFile.FileName)
+                                                          ? $"height:{file.ThumbnailHeight}px;" +
+                                                          $"width:{file.ThumbnailWidth}px;" +
+                                                          $"padding:10px;background-color:darkgrey;"
+                                                          : $"height:{file.ThumbnailHeight}px;" +
+                                                          $"width:{file.ThumbnailWidth}px;" +
+                                                          $"padding:10px;background-color:white;")"
+                                                 Click="@((args) => SelectImage(file))" />
+                                </Template>
+                            </RadzenDataList>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (ShowProgressBarPopup)
+{
+    <div class="modal" tabindex="-1" style="display:block" role="dialog">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Upload Status</h4>
+                </div>
+                <div align="center">
+                    <RadzenProgressBar Value="@progress"
+                                       Unit="@info"
+                                       Visible="@(progress > 0)"
+                                       Style="margin-bottom: 20px" />
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (ShowFolderPopup)
+{
+    <div class="modal" tabindex="-1" style="display:block" role="dialog">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">New Folder Name</h4>
+                    <button type="button" class="close"
+                            @onclick="CloseFolderPopup">
+                        <span aria-hidden="true">X</span>
+                    </button>
+                </div>
+                <div align="center">
+                    <RadzenTextBox Placeholder="Folder Name"
+                                   @bind-Value="NewFolderName"
+                                   Style="margin-bottom: 20px" />
+                    <RadzenButton Text="Add Folder"
+                                  Click="AddFolderName"
+                                  ButtonStyle="ButtonStyle.Success"
+                                  Style="margin-bottom: 20px;height: 35px" />
+                </div>
+            </div>
+        </div>
+    </div>
+}

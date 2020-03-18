@@ -14,7 +14,6 @@ namespace blazorblog.Data.Dto
 
         public string Summary {get;set;}
 
-        public string UserId {get;set;}
 
         public ICollection<CategoryDto> Categories { get; set; }
         

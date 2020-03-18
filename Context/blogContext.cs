@@ -15,15 +15,17 @@ namespace blazorblog.Context
 {
     public partial class blogContext : IdentityDbContext<User>
     {
-        public blogContext(DbContextOptions<blogContext> options,UserResolverService _service)
+        public blogContext(DbContextOptions<blogContext> options, UserResolverService _service)
        : base(options)
         {
-            _curUser = _service.GetUser();
+   
+                _curUser = _service.GetUser();
+     
         }
-        private string _curUser {get;set;}
+        private string _curUser { get; set; }
         public virtual DbSet<Blog> Blogs { get; set; }
         public virtual DbSet<Category> Categories { get; set; }
-        public virtual DbSet<BlogCategory> Comments { get; set; }
+        public virtual DbSet<BlogCategory> BlogCategories { get; set; }
 
         public override int SaveChanges()
         {

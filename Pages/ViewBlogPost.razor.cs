@@ -1,0 +1,125 @@
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+using blazorblog.Data;
+using blazorblog.Data.Dto;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
+using Toolbelt.Blazor.HeadElement;
+using static Toolbelt.Blazor.HeadElement.MetaElement;
+
+namespace blazorblog.Pages
+{
+    public class ViewBlogPostModel : ComponentBase, IDisposable
+    {
+        [CascadingParameter]
+        private Task<AuthenticationState> authenticationStateTask { get; set; }
+        [Inject] NavigationManager NavigationManager { get; set; }
+        [Inject] IHeadElementHelper HeadElementHelper { get; set; }
+
+        [Inject] BlogService _blogService { get; set; }
+        [Parameter] public string NormalizeTitle { get; set; }
+
+        protected BlogDto SelectedBlog = new BlogDto() { Id = 0 };
+
+        // GeneralSettings objGeneralSettings = new GeneralSettings();
+        protected bool disposedValue = false; // To detect redundant calls
+        protected readonly CancellationTokenSource cts = new CancellationTokenSource();
+        protected BlogAdministration BlogAdministrationControl;
+        protected System.Security.Claims.ClaimsPrincipal CurrentUser;
+        protected bool UserIsAdminOfBlogPost = false;
+        protected string AbsoluteUrlOfThisPage => NavigationManager.ToAbsoluteUri($"/ViewBlogPost/{NormalizeTitle}").AbsoluteUri;
+
+        protected override async Task OnInitializedAsync()
+        {
+            try
+            {
+
+                SelectedBlog = await _blogService.GetBlogAsync(NormalizeTitle);
+                // await LogAction($"View Blog #{SelectedBlog.BlogId}");
+
+                // Get the current user
+                CurrentUser = (await authenticationStateTask).User;
+
+                if (CurrentUser.Identity.IsAuthenticated)
+                {
+                    if (CurrentUser.Identity.Name.ToLower() == SelectedBlog.UserName.ToLower())
+                    {
+                        UserIsAdminOfBlogPost = true;
+                    }
+                }
+
+                await HeadElementHelper.SetMetaElementsAsync(
+                ByProp("og:description", SelectedBlog.Title),
+                ByName("description", SelectedBlog.Title)
+                );
+            }
+            catch
+            {
+                // await LogAction($"Error Viewing Blog #{BlogPostId}");
+                SelectedBlog = new BlogDto() { CreatedDate = DateTime.Now, Title = "ERROR - Page Not Found" };
+            }
+        }
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+                // if (Convert.ToBoolean(objGeneralSettings.DisqusEnabled))
+                // {
+                //     string url = NavigationManager.ToAbsoluteUri($"/ViewBlogPost/{BlogPostId}").AbsoluteUri;
+
+                //     await DisqusInterop.ResetDisqus(
+                //         JSRuntime,
+                //         BlogPostId.ToString(),
+                //         url,
+                //         SelectedBlog.BlogTitle);
+
+                //     DisqusState.SetDisplayDisqus(true);
+                // }
+            }
+        }
+
+        protected void EditBlog()
+        {
+            BlogAdministrationControl.EditBlog(SelectedBlog);
+        }
+
+        protected void Back()
+        {
+            NavigationManager.NavigateTo("/");
+        }
+
+        protected async Task BlogUpdatedEvent()
+        {
+            try
+            {
+                SelectedBlog = await _blogService.GetBlogAsync(NormalizeTitle);
+            }
+            catch
+            {
+                // Blog was deleted
+                Back();
+            }
+        }
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    cts.Dispose();
+                }
+
+                disposedValue = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            // TODO: uncomment the following line if the finalizer is overridden above.
+            // GC.SuppressFinalize(this);
+        }
+    }
+}

@@ -15,7 +15,7 @@ namespace blazorblog.Entity
         public BlogCategory(int BlogId,int CategoryId)
         {
             this.BlogId = BlogId;
-            this.CategoryId = this.CategoryId;
+            this.CategoryId = CategoryId;
         }
     }
 }

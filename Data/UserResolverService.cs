@@ -12,7 +12,13 @@ namespace blazorblog.Data
 
         public string GetUser()
         {
-            return _context.HttpContext.User?.Identity?.Name;
+            if(_context.HttpContext != null)
+            {
+                return _context.HttpContext.User?.Identity?.Name;
+            }else{
+                return null;
+            }
         }
     }
+
 }

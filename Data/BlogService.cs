@@ -38,7 +38,7 @@ namespace blazorblog.Data
                 Summary = p.Summary,
                 NormalizeTitle = p.NormalizeTitle,
                 Content = p.Content,
-                UserName = p.User.UserName,
+                UserName = p.CreatedBy,
                 CreatedDate = p.CreatedDate,
                 Categories = p.Categories.Select(y => new CategoryDto
                 {
@@ -51,10 +51,10 @@ namespace blazorblog.Data
             return await Method.EntityWithPaging<BlogDto>(orderQuery, totalSize, input.page - 1, Constant.PageSize);
         }
 
-        public async Task<BlogDto> GetBlogAsync(int BlogId)
+        public async Task<BlogDto> GetBlogAsync(string NormalizeTitle)
         {
             var query = await _context.Blogs.Include(x => x.Categories)
-            .Where(p => p.Id == BlogId)
+            .Where(p => p.NormalizeTitle == NormalizeTitle)
             .Select(p => new BlogDto
             {
                 Id = p.Id,
@@ -62,7 +62,7 @@ namespace blazorblog.Data
                 Summary = p.Summary,
                 NormalizeTitle = p.NormalizeTitle,
                 Content = p.Content,
-                UserName = p.User.UserName,
+                UserName = p.CreatedBy,
                 CreatedDate = p.CreatedDate,
                 Categories = p.Categories.Select(y => new CategoryDto
                 {
@@ -77,7 +77,7 @@ namespace blazorblog.Data
         public async Task<IPagedEntities<BlogDto>> GetBlogsAdminAsync(BlogInputDto input)
         {
             IQueryable<Blog> query = _context.Blogs.Include(x => x.Categories)
-            .Where(p => p.UserId == input.UserId);
+            .Where(p => p.CreatedBy == input.UserName);
             var totalSize = await query.AsNoTracking().CountAsync();
 
             var orderQuery = query.Select(p => new BlogDto
@@ -87,9 +87,8 @@ namespace blazorblog.Data
                 Summary = p.Summary,
                 NormalizeTitle = p.NormalizeTitle,
                 Content = p.Content,
-                UserName = p.User.UserName,
+                UserName = p.CreatedBy,
                 CreatedDate = p.CreatedDate,
-                UserId = p.UserId,
                 Categories = p.Categories.Select(y => new CategoryDto
                 {
                     CategoryId = y.Id,
