@@ -131,7 +131,7 @@ namespace blazorblog.Pages
 
             foreach (var item in FileNames)
             {
-                using (var image = Image.FromFile(item))
+                using (var image = System.Drawing.Image.FromFile(item))
                 {
                     // Calculate Thumbnail
                     int thumbnailHeight = 100;
