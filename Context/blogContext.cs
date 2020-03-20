@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading;
 using blazorblog.Data;
+using blazorblog.Data.Dto;
 using blazorblog.Entity;
 using blazorblog.Entity.AbstractClass;
 using blazorblog.Helpers;
@@ -26,6 +27,8 @@ namespace blazorblog.Context
         public virtual DbSet<Blog> Blogs { get; set; }
         public virtual DbSet<Category> Categories { get; set; }
         public virtual DbSet<BlogCategory> BlogCategories { get; set; }
+
+        public virtual DbSet<Settings> GlobalSetting { get; set; }
 
         public override int SaveChanges()
         {

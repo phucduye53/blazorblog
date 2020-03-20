@@ -1,0 +1,177 @@
+@page "/settings"
+@using Helpers;
+@inherits SettingModel
+<h1>Settings</h1>
+<!-- AuthorizeView allows us to only show sections of the page -->
+<!-- based on the security on the current user -->
+<AuthorizeView>
+    <!-- Show this section if the user is logged in -->
+    <Authorized>
+        @if (@context.User.IsInRole(Constant.ADMINISTRATION_ROLE))
+        {
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <td>Application Name</td>
+                        <td>
+                            <input class="form-control" type="text"
+                                   @bind="objGlobalSettings.ApplicationName" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Application Logo</td>
+                        <td>
+                            <img src="@objGlobalSettings.ApplicationLogo" />
+                            <button type="button" class="btn btn-link" @onclick="SelectLogo">[Select]</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Application Header</td>
+                        <td>
+                            @if (!RichTextEditorMode)
+                            {
+                                <textarea class="form-control" @bind="@objGlobalSettings.ApplicationHeader" rows="5" />
+                            }
+                            <div style="@((!RichTextEditorMode) ? "display: none;":"")">
+                                <BlazoredTextEditor @ref="@QuillHtml">
+                                    <ToolbarContent>
+                                        <select class="ql-header">
+                                            <option selected=""></option>
+                                            <option value="1"></option>
+                                            <option value="2"></option>
+                                            <option value="3"></option>
+                                            <option value="4"></option>
+                                            <option value="5"></option>
+                                        </select>
+                                        <span class="ql-formats">
+                                            <button class="ql-bold"></button>
+                                            <button class="ql-italic"></button>
+                                            <button class="ql-underline"></button>
+                                            <button class="ql-strike"></button>
+                                        </span>
+                                        <span class="ql-formats">
+                                            <select class="ql-color"></select>
+                                            <select class="ql-background"></select>
+                                        </span>
+                                        <span class="ql-formats">
+                                            <button class="ql-list" value="ordered"></button>
+                                            <button class="ql-list" value="bullet"></button>
+                                        </span>
+                                        <span class="ql-formats">
+                                            <button class="ql-link"></button>
+                                            <button class="btn btn-link" id="custom-button"
+                                                    @onclick="InsertApplicationHeaderImageClick">
+                                                <img src="imageIcon.png" style="border:hidden" />
+                                            </button>
+                                        </span>
+                                    </ToolbarContent>
+                                    <EditorContent>
+                                        &nbsp;
+                                    </EditorContent>
+                                </BlazoredTextEditor>
+                            </div>
+                            @if (!RichTextEditorMode)
+                            {
+                                <button type="button" class="btn btn-link" @onclick="RichTextEditor"><h6>[Rich Text Editor]</h6></button>
+                            }
+                            else
+                            {
+                                <button type="button" class="btn btn-link" @onclick="RawHTMLEditor"><h6>[Raw HTML Editor]</h6></button>
+                            }
+                        </td>
+                    </tr>
+       
+                    <tr>
+                        <td>SMTP Server</td>
+                        <td>
+                            <input class="form-control" type="text"
+                                   @bind="objGlobalSettings.SMTPServer" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>SMTP Authentication</td>
+                        <td>
+                            <select class="form-control"
+                                    @bind="@SMTPAuthentication">
+                                @foreach (var option in OptionsSMTP)
+                                {
+                                    <option value="@option">
+                                        @option
+                                    </option>
+                                }
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>SMTP Secure</td>
+                        <td>
+                            <select class="form-control"
+                                    @bind="@SMTPSecure">
+                                @foreach (var option in OptionsTrueFalse)
+                                {
+                                    <option value="@option">
+                                        @option
+                                    </option>
+                                }
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>SMTP User Name</td>
+                        <td>
+                            <input class="form-control" type="text"
+                                   @bind="objGlobalSettings.SMTPUserName" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>SMTP Password</td>
+                        <td>
+                            <input class="form-control" type="text"
+                                   @bind="objGlobalSettings.SMTPPassword" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>SMTP From Email</td>
+                        <td>
+                            <input class="form-control" type="text"
+                                   @bind="objGlobalSettings.SMTPFromEmail" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Enable Disqus Comments</td>
+                        <td>
+                            <select class="form-control"
+                                    @bind="@DisqusEnabled">
+                                @foreach (var option in OptionsTrueFalse)
+                                {
+                                    <option value="@option">
+                                        @option
+                                    </option>
+                                }
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Disqus ShortName</td>
+                        <td>
+                            <input class="form-control" type="text"
+                                   @bind="objGlobalSettings.DisqusShortName" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <br />
+            <button class="btn btn-primary" @onclick="Save">Save</button>
+            <button class="btn btn-success" @onclick="SendTestEmail">Send Test Email</button>
+            <br /><br />
+            <FileManager @ref="FileManagerControl"
+                         ImageSelected="InsertImage" />
+            <FileManager @ref="FileManagerApplicationHeaderControl"
+                         ImageSelected="InsertApplicationHeaderImage" />
+        }
+    </Authorized>
+    <!-- Show this section if the user is not logged in -->
+    <NotAuthorized>
+        <p>You're not signed in.</p>
+    </NotAuthorized>
+</AuthorizeView>

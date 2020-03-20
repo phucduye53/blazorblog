@@ -18,6 +18,7 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="3.1.2" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.Design" Version="1.1.1" />
         <PackageReference Include="Radzen.Blazor" Version="2.3.7" />
+        <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
         <PackageReference Include="Toolbelt.Blazor.HeadElement" Version="1.1.0.1" />
   </ItemGroup>
 
