@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using blazorblog.Context;
@@ -9,9 +10,10 @@ using blazorblog.Context;
 namespace blazorblog.Migrations
 {
     [DbContext(typeof(blogContext))]
-    partial class blogContextModelSnapshot : ModelSnapshot
+    [Migration("20200323132452_settingtable")]
+    partial class settingtable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -185,74 +187,6 @@ namespace blazorblog.Migrations
                     b.HasKey("SettingId");
 
                     b.ToTable("GlobalSetting");
-
-                    b.HasData(
-                        new
-                        {
-                            SettingId = 1,
-                            SettingName = "ApplicationName",
-                            SettingValue = "True"
-                        },
-                        new
-                        {
-                            SettingId = 2,
-                            SettingName = "SMTPServer",
-                            SettingValue = "True"
-                        },
-                        new
-                        {
-                            SettingId = 3,
-                            SettingName = "SMTPSecure",
-                            SettingValue = "True"
-                        },
-                        new
-                        {
-                            SettingId = 4,
-                            SettingName = "SMTPUserName",
-                            SettingValue = "True"
-                        },
-                        new
-                        {
-                            SettingId = 5,
-                            SettingName = "SMTPPassword",
-                            SettingValue = "True"
-                        },
-                        new
-                        {
-                            SettingId = 6,
-                            SettingName = "SMTPAuthendication",
-                            SettingValue = "True"
-                        },
-                        new
-                        {
-                            SettingId = 7,
-                            SettingName = "SMTPFromEmail",
-                            SettingValue = "True"
-                        },
-                        new
-                        {
-                            SettingId = 8,
-                            SettingName = "ApplicationLogo",
-                            SettingValue = "uploads\\logo.png"
-                        },
-                        new
-                        {
-                            SettingId = 9,
-                            SettingName = "ApplicationHeader",
-                            SettingValue = "True"
-                        },
-                        new
-                        {
-                            SettingId = 10,
-                            SettingName = "DisqusEnabled",
-                            SettingValue = "True"
-                        },
-                        new
-                        {
-                            SettingId = 11,
-                            SettingName = "DisqusShortName",
-                            SettingValue = "True"
-                        });
                 });
 
             modelBuilder.Entity("blazorblog.Entity.Blog", b =>
@@ -443,14 +377,14 @@ namespace blazorblog.Migrations
                         {
                             Id = "a18be9c0-aa65-4af8-bd17-00bd9344e575",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "5300eee5-6a8e-491a-bb7b-c8ee453354e1",
+                            ConcurrencyStamp = "b5a53606-e711-44f2-a2e8-c428eb1114a5",
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "admin@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "admin@gmail.com",
                             NormalizedUserName = "admin@gmail.com",
-                            PasswordHash = "AQAAAAEAACcQAAAAEIaEJAqyL1e2u0+nayupl15MI2RLqO922m9WBLSgnxhoagcXU/53Nu07fP3ZowGQsg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEN4bg35aTB+Ii+VHhR7UHgaftswg80D5qwEufsN2ODugc3yD1sCh+Q+uKisvEMhvRA==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             TwoFactorEnabled = false,

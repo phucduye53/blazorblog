@@ -20,7 +20,7 @@ namespace blazorblog.Data
         public async Task<GlobalSetting> GetGeneralSettingsAsync()
         {
             GlobalSetting objGeneralSettings = new GlobalSetting();
-
+            
             var resuts = await _context.GlobalSetting.AsNoTracking().ToListAsync();
 
             objGeneralSettings.SMTPServer = Convert.ToString(resuts.FirstOrDefault(x => x.SettingName == "SMTPServer").SettingValue);

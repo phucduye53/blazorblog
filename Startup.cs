@@ -39,36 +39,38 @@ namespace blazorblog
         {
             services.AddDbContext<blogContext>(options =>
                 options.UseNpgsql(
-                    Configuration.GetConnectionString("DefaultConnection")),ServiceLifetime.Transient);
+                    Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Transient);
             services.AddDefaultIdentity<User>(
                   options => options.SignIn.RequireConfirmedAccount = false)
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<blogContext>();
-            services.Configure<IdentityOptions>(options =>  
-            {  
+            services.Configure<IdentityOptions>(options =>
+            {
                 // Password settings.  
-                options.Password.RequireDigit = true;  
-                options.Password.RequireLowercase = false;  
-                options.Password.RequireNonAlphanumeric = false;  
-                options.Password.RequireUppercase = false;  
-                options.Password.RequiredLength = 6;  
+                options.Password.RequireDigit = true;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequiredLength = 6;
 
-            });  
-  
+            });
+
 
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddScoped<AuthenticationStateProvider,ServerAuthenticationStateProvider>();
+            services.AddScoped<AuthenticationStateProvider, ServerAuthenticationStateProvider>();
 
             services.AddTransient<BlogService>();
             services.AddTransient<UserService>();
             services.AddTransient<CategoryService>();
-             services.AddScoped<DisqusState>();
-             services.AddScoped<BlogSearchState>();
+            services.AddScoped<DisqusState>();
+            services.AddScoped<BlogSearchState>();
+            services.AddScoped<GlobalSettingService>();
+            services.AddScoped<EmailService>();
             services.AddTransient<UserResolverService>();
             services.AddHttpContextAccessor();
             services.AddScoped<HttpContextAccessor>();
-               services.AddBlazoredToast();
+            services.AddBlazoredToast();
             services.AddHeadElementHelper();
 
 
@@ -91,9 +93,9 @@ namespace blazorblog
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
-      
-           app.UseRouting();
-                  
+
+            app.UseRouting();
+
             app.UseAuthentication();
             app.UseAuthorization();
 

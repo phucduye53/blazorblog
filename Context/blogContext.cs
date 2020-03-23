@@ -19,9 +19,9 @@ namespace blazorblog.Context
         public blogContext(DbContextOptions<blogContext> options, UserResolverService _service)
        : base(options)
         {
-   
-                _curUser = _service.GetUser();
-     
+
+            _curUser = _service.GetUser();
+
         }
         private string _curUser { get; set; }
         public virtual DbSet<Blog> Blogs { get; set; }
@@ -97,6 +97,19 @@ namespace blazorblog.Context
                 RoleId = ROLE_ID,
                 UserId = ADMIN_ID
             });
+            builder.Entity<Settings>().HasData(
+                new Settings { SettingId = 1, SettingName = "ApplicationName", SettingValue = "True" },
+                new Settings { SettingId = 2, SettingName = "SMTPServer", SettingValue = "True" },
+                new Settings { SettingId = 3, SettingName = "SMTPSecure", SettingValue = "True" },
+                new Settings { SettingId = 4, SettingName = "SMTPUserName", SettingValue = "True" },
+                new Settings { SettingId = 5, SettingName = "SMTPPassword", SettingValue = "True" },
+                new Settings { SettingId = 6, SettingName = "SMTPAuthendication", SettingValue = "True" },
+                new Settings { SettingId = 7, SettingName = "SMTPFromEmail", SettingValue = "True" },
+                new Settings { SettingId = 8, SettingName = "ApplicationLogo", SettingValue = @"uploads\logo.png" },
+                new Settings { SettingId = 9, SettingName = "ApplicationHeader", SettingValue = "True" },
+                new Settings { SettingId = 10, SettingName = "DisqusEnabled", SettingValue = "True" },
+                new Settings { SettingId = 11, SettingName = "DisqusShortName", SettingValue = "True" }
+                );
         }
     }
 }

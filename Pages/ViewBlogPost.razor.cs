@@ -3,10 +3,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using blazorblog.Data;
 using blazorblog.Data.Dto;
+using blazorblog.Entity;
+using blazorblog.Helpers;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Toolbelt.Blazor.HeadElement;
 using static Toolbelt.Blazor.HeadElement.MetaElement;
+using Microsoft.JSInterop;
 
 namespace blazorblog.Pages
 {
@@ -16,13 +19,15 @@ namespace blazorblog.Pages
         private Task<AuthenticationState> authenticationStateTask { get; set; }
         [Inject] NavigationManager NavigationManager { get; set; }
         [Inject] IHeadElementHelper HeadElementHelper { get; set; }
-
+        [Inject] GlobalSettingService GlobalSettingService { get; set; }
         [Inject] BlogService _blogService { get; set; }
+        [Inject] IJSRuntime JSRuntime {get;set;}
+         [Inject] DisqusState DisqusState { get; set; }
         [Parameter] public string NormalizeTitle { get; set; }
 
         protected BlogDto SelectedBlog = new BlogDto() { Id = 0 };
 
-        // GeneralSettings objGeneralSettings = new GeneralSettings();
+        protected GlobalSetting objGeneralSettings = new GlobalSetting();
         protected bool disposedValue = false; // To detect redundant calls
         protected readonly CancellationTokenSource cts = new CancellationTokenSource();
         protected BlogAdministration BlogAdministrationControl;
@@ -37,7 +42,7 @@ namespace blazorblog.Pages
 
                 SelectedBlog = await _blogService.GetBlogAsync(NormalizeTitle);
                 // await LogAction($"View Blog #{SelectedBlog.BlogId}");
-
+                objGeneralSettings = await GlobalSettingService.GetGeneralSettingsAsync();
                 // Get the current user
                 CurrentUser = (await authenticationStateTask).User;
 
@@ -61,24 +66,24 @@ namespace blazorblog.Pages
             }
         }
 
-        // protected override async Task OnAfterRenderAsync(bool firstRender)
-        // {
-        //     if (firstRender)
-        //     {
-        //         // if (Convert.ToBoolean(objGeneralSettings.DisqusEnabled))
-        //         // {
-        //         //     string url = NavigationManager.ToAbsoluteUri($"/ViewBlogPost/{BlogPostId}").AbsoluteUri;
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+                if (Convert.ToBoolean(objGeneralSettings.DisqusEnabled))
+                {
+                    string url = NavigationManager.ToAbsoluteUri($"/ViewBlogPost/{NormalizeTitle}").AbsoluteUri;
 
-        //         //     await DisqusInterop.ResetDisqus(
-        //         //         JSRuntime,
-        //         //         BlogPostId.ToString(),
-        //         //         url,
-        //         //         SelectedBlog.BlogTitle);
+                    await DisqusInterop.ResetDisqus(
+                        JSRuntime,
+                        NormalizeTitle.ToString(),
+                        url,
+                        SelectedBlog.Title);
 
-        //         //     DisqusState.SetDisplayDisqus(true);
-        //         // }
-        //     }
-        // }
+                    DisqusState.SetDisplayDisqus(true);
+                }
+            }
+        }
 
         protected void EditBlog()
         {
