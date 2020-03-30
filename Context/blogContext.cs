@@ -29,7 +29,7 @@ namespace blazorblog.Context
         public virtual DbSet<BlogCategory> BlogCategories { get; set; }
 
         public virtual DbSet<Settings> GlobalSetting { get; set; }
-
+        public virtual DbSet<Log> Logs { get; set; }
         public override int SaveChanges()
         {
             var modifiedEntries = ChangeTracker.Entries()

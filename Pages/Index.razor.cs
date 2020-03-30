@@ -8,31 +8,29 @@ using blazorblog.Entity;
 using blazorblog.Helpers;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 
 namespace blazorblog.Pages
 {
     public class IndexModel : ComponentBase, IDisposable
     {
-        [Inject]
-        protected UserManager<User> _userManager { get; set; }
-        [Inject]
-        protected CategoryService _categoryService { get; set; }
-        [Inject]
-        protected BlogService _blogService { get; set; }
-        [Inject]
-        protected RoleManager<IdentityRole> _roleManager { get; set; }
-         [Inject]
-        protected DisqusState DisqusState { get; set; }
-        [Inject]
-        protected BlogSearchState BlogSearchState { get; set; }
+        [Inject] protected UserManager<User> _userManager { get; set; }
+        [Inject] protected CategoryService _categoryService { get; set; }
+        [Inject] protected BlogService _blogService { get; set; }
+        [Inject] protected RoleManager<IdentityRole> _roleManager { get; set; }
+        [Inject] protected DisqusState DisqusState { get; set; }
+        [Inject] protected BlogSearchState BlogSearchState { get; set; }
+
+        [Inject] protected LogService LogService { get; set; }
+        [Inject] IHttpContextAccessor httpContextAccessor { get; set; }
         [CascadingParameter]
         private Task<AuthenticationState> authenticationStateTask { get; set; }
 
         protected List<CategoryDto> categories = new List<CategoryDto>();
 
         protected IPagedEntities<BlogDto> blogs = new PagedEntities<BlogDto>();
-  
+
         protected bool ShowPreviousButton
         {
             get
@@ -77,7 +75,7 @@ namespace blazorblog.Pages
 
 
 
-       
+
 
             // Get the current user
             CurrentUser = (await authenticationStateTask).User;
@@ -105,10 +103,14 @@ namespace blazorblog.Pages
 
         protected async Task BlogUpdatedEvent()
         {
-            blogs = await _blogService.GetBlogsAsync(new BlogInputDto(){
-                page = BlogSearchState.CurrentPage,
-                CategoryId = Convert.ToInt32(BlogSearchState.CurrentCategoryID)
-            });
+            using (new PerfTimerLogger("GetBlogsAsync", (CurrentUser.Identity.Name != null) ? CurrentUser.Identity.Name : "", LogService, httpContextAccessor))
+            {
+                blogs = await _blogService.GetBlogsAsync(new BlogInputDto()
+                {
+                    page = BlogSearchState.CurrentPage,
+                    CategoryId = Convert.ToInt32(BlogSearchState.CurrentCategoryID)
+                });
+            }
         }
 
         protected async Task ChangeCategory(object value, string name)

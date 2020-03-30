@@ -20,9 +20,7 @@ namespace blazorblog.Data
             var query = _context.Users.Where(x => x.UserName.ToLower().Contains(paramSearch)
                  || x.Email.ToLower().Contains(paramSearch));
 
-            var totalSize = await query.AsNoTracking().CountAsync();
-     
-            
+            var totalSize = await query.AsNoTracking().CountAsync();           
 
             var orderQuery = query.Select(p => new UserDto
             {

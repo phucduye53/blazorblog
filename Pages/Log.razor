@@ -1,0 +1,80 @@
+@inherits LogModel
+@using blazorblog.Entity;
+<h1>Logs</h1>
+ @if (logs == null)
+         {
+                <p><em>Loading...</em></p>
+            }
+            else
+            {
+                @* <span style="color:red">@strError</span>
+                <!-- Button to delete the Logs -->
+                <button class="btn btn-sm btn-danger"
+                        @onclick="DeleteLogs">
+                    Delete Logs
+                </button> *@
+                <br /><br />
+                <!-- Show the logs -->
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Action</th>
+                            <th>Execution time</th>
+                            <th>User Name</th>
+                            <th>IP Address</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var log in logs.Entities)
+                        {
+                            <tr>
+                                <td>@log.LogDate.ToShortDateString() @log.LogDate.ToShortTimeString()</td>
+                                <td>@log.LogAction</td>
+                                <td>@log.LogPerfTime</td>
+                                <td>@log.LogUserName</td>
+                                <td>@log.LogIpaddress</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+
+            <br />
+            <button class="btn btn-warning"
+                    @onclick="Previous">
+                <b>&#x3C;</b>
+            </button>
+            @if (ShowNextButton)
+            {
+                <button class="btn btn-warning"
+                        @onclick="Next">
+                    <b>&#x3E;</b>
+                </button>
+            }
+
+            @if (ConFirmDeletePopup)
+            {
+                <div class="modal" tabindex="-1" style="display:block;background-color:gainsboro" role="dialog">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3 class="modal-title">Delete All Logs?</h3>
+                            </div>
+                            <div class="modal-body">
+                                <button class="btn btn-primary"
+                                        @onclick="DeleteYes">
+                                    Yes
+                                </button>
+                                <button class="btn btn-danger"
+                                        @onclick="DeleteNo">
+                                    No
+                                </button>
+                                <br />
+                                <span style="color: red">@strError</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+ }
+

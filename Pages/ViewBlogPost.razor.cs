@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Toolbelt.Blazor.HeadElement;
 using static Toolbelt.Blazor.HeadElement.MetaElement;
 using Microsoft.JSInterop;
+using Microsoft.AspNetCore.Http;
 
 namespace blazorblog.Pages
 {
@@ -21,8 +22,10 @@ namespace blazorblog.Pages
         [Inject] IHeadElementHelper HeadElementHelper { get; set; }
         [Inject] GlobalSettingService GlobalSettingService { get; set; }
         [Inject] BlogService _blogService { get; set; }
-        [Inject] IJSRuntime JSRuntime {get;set;}
-         [Inject] DisqusState DisqusState { get; set; }
+        [Inject] IJSRuntime JSRuntime { get; set; }
+        [Inject] DisqusState DisqusState { get; set; }
+        [Inject] LogService LogService { get; set; }
+        [Inject] IHttpContextAccessor httpContextAccessor {get;set;}
         [Parameter] public string NormalizeTitle { get; set; }
 
         protected BlogDto SelectedBlog = new BlogDto() { Id = 0 };
@@ -40,7 +43,7 @@ namespace blazorblog.Pages
             try
             {
 
-                SelectedBlog = await _blogService.GetBlogAsync(NormalizeTitle);
+
                 // await LogAction($"View Blog #{SelectedBlog.BlogId}");
                 objGeneralSettings = await GlobalSettingService.GetGeneralSettingsAsync();
                 // Get the current user
@@ -53,7 +56,11 @@ namespace blazorblog.Pages
                         UserIsAdminOfBlogPost = true;
                     }
                 }
-
+                using (new PerfTimerLogger("GetBlogAsync",(CurrentUser.Identity.Name != null) ? CurrentUser.Identity.Name : "",LogService,httpContextAccessor))
+                {
+                    SelectedBlog = await _blogService.GetBlogAsync(NormalizeTitle);
+                }
+            
                 await HeadElementHelper.SetMetaElementsAsync(
                 ByProp("og:description", SelectedBlog.Title),
                 ByName("description", SelectedBlog.Title)
