@@ -25,7 +25,7 @@ namespace blazorblog.Pages
         [Inject] IJSRuntime JSRuntime { get; set; }
         [Inject] DisqusState DisqusState { get; set; }
         [Inject] LogService LogService { get; set; }
-        [Inject] IHttpContextAccessor httpContextAccessor {get;set;}
+        [Inject] IHttpContextAccessor httpContextAccessor { get; set; }
         [Parameter] public string NormalizeTitle { get; set; }
 
         protected BlogDto SelectedBlog = new BlogDto() { Id = 0 };
@@ -49,6 +49,11 @@ namespace blazorblog.Pages
                 // Get the current user
                 CurrentUser = (await authenticationStateTask).User;
 
+
+                using (new PerfTimerLogger("GetBlogAsync", (CurrentUser.Identity.Name != null) ? CurrentUser.Identity.Name : "", LogService, httpContextAccessor))
+                {
+                    SelectedBlog = await _blogService.GetBlogAsync(NormalizeTitle);
+                }
                 if (CurrentUser.Identity.IsAuthenticated)
                 {
                     if (CurrentUser.Identity.Name.ToLower() == SelectedBlog.UserName.ToLower())
@@ -56,11 +61,6 @@ namespace blazorblog.Pages
                         UserIsAdminOfBlogPost = true;
                     }
                 }
-                using (new PerfTimerLogger("GetBlogAsync",(CurrentUser.Identity.Name != null) ? CurrentUser.Identity.Name : "",LogService,httpContextAccessor))
-                {
-                    SelectedBlog = await _blogService.GetBlogAsync(NormalizeTitle);
-                }
-            
                 await HeadElementHelper.SetMetaElementsAsync(
                 ByProp("og:description", SelectedBlog.Title),
                 ByName("description", SelectedBlog.Title)

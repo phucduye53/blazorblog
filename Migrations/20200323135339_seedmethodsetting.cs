@@ -11,17 +11,17 @@ namespace blazorblog.Migrations
                 columns: new[] { "SettingId", "SettingName", "SettingValue" },
                 values: new object[,]
                 {
-                    { 1, "ApplicationName", "True" },
-                    { 2, "SMTPServer", "True" },
-                    { 3, "SMTPSecure", "True" },
-                    { 4, "SMTPUserName", "True" },
-                    { 5, "SMTPPassword", "True" },
-                    { 6, "SMTPAuthendication", "True" },
+                    { 1, "ApplicationName", "tlq" },
+                    { 2, "SMTPServer", "test" },
+                    { 3, "SMTPSecure", "test" },
+                    { 4, "SMTPUserName", "test" },
+                    { 5, "SMTPPassword", "test" },
+                    { 6, "SMTPAuthendication", "1" },
                     { 7, "SMTPFromEmail", "True" },
-                    { 8, "ApplicationLogo", "uploads\\logo.png" },
-                    { 9, "ApplicationHeader", "True" },
+                    { 8, "ApplicationLogo", @"\uploads\0ktgjc50_400x400.jpg" },
+                    { 9, "ApplicationHeader", "<p>True</p>" },
                     { 10, "DisqusEnabled", "True" },
-                    { 11, "DisqusShortName", "True" }
+                    { 11, "DisqusShortName", "tlqblog" }
                 });
 
 

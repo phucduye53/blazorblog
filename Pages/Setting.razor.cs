@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using blazorblog.Data;
 using blazorblog.Entity;
@@ -13,17 +14,20 @@ using Microsoft.AspNetCore.Identity;
 
 namespace blazorblog.Pages
 {
-    public class SettingModel : ComponentBase
+    public class SettingModel : ComponentBase, IDisposable
     {
         [CascadingParameter]
         private Task<AuthenticationState> authenticationStateTask { get; set; }
-        [Inject] IHttpContextAccessor httpContextAccessor {get;set;}
-        [Inject] UserManager<User> _UserManager {get;set;}
-        [Inject] RoleManager<IdentityRole> _RoleManager{get;set;}
-        [Inject] GlobalSettingService _globalSettingService {get;set;}
-        [Inject] EmailService _emailService {get;set;}
-        [Inject] IToastService toastService  {get;set;}
-        [Inject] DisqusState disqusState {get;set;}
+        [Inject] IHttpContextAccessor httpContextAccessor { get; set; }
+        [Inject] UserManager<User> _UserManager { get; set; }
+        [Inject] RoleManager<IdentityRole> _RoleManager { get; set; }
+        [Inject] GlobalSettingService _globalSettingService { get; set; }
+        [Inject] EmailService _emailService { get; set; }
+        [Inject] IToastService toastService { get; set; }
+        [Inject] DisqusState disqusState { get; set; }
+
+        protected bool disposedValue = false; // To detect redundant calls
+        protected readonly CancellationTokenSource cts = new CancellationTokenSource();
         public System.Security.Claims.ClaimsPrincipal CurrentUser;
 
 
@@ -46,7 +50,7 @@ namespace blazorblog.Pages
             // Get the current user
             CurrentUser = (await authenticationStateTask).User;
 
-       
+
 
             await LoadGeneralSettingsAsync();
             disqusState.SetDisplayDisqus(false);
@@ -57,8 +61,11 @@ namespace blazorblog.Pages
         {
             if (firstRender)
             {
-                var GeneralSettings = await _globalSettingService.GetGeneralSettingsAsync();
-                await this.QuillHtml.LoadHTMLContent(GeneralSettings.ApplicationHeader);
+                if (objGlobalSettings.ApplicationHeader != null)
+                {
+
+                    await this.QuillHtml.LoadHTMLContent(objGlobalSettings.ApplicationHeader);
+                }
             }
         }
 
@@ -211,6 +218,25 @@ namespace blazorblog.Pages
             {
                 toastService.ShowError("", ex.GetBaseException().Message);
             }
+        }
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    cts.Dispose();
+                }
+
+                disposedValue = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            // TODO: uncomment the following line if the finalizer is overridden above.
+            // GC.SuppressFinalize(this);
         }
     }
 }

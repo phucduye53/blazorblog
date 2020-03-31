@@ -60,13 +60,14 @@ namespace blazorblog
             services.AddServerSideBlazor();
             services.AddScoped<AuthenticationStateProvider, ServerAuthenticationStateProvider>();
 
-            services.AddTransient<BlogService>();
-            services.AddTransient<UserService>();
-            services.AddTransient<CategoryService>();
+            services.AddScoped<BlogService>();
+            services.AddScoped<UserService>();
+            services.AddScoped<CategoryService>();
+            services.AddScoped<LogService>();
             services.AddScoped<DisqusState>();
             services.AddScoped<BlogSearchState>();
-            services.AddScoped<GlobalSettingService>();
-            services.AddScoped<EmailService>();
+            services.AddTransient<GlobalSettingService>();
+            services.AddTransient<EmailService>();
             services.AddTransient<UserResolverService>();
             services.AddHttpContextAccessor();
             services.AddScoped<HttpContextAccessor>();
