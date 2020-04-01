@@ -60,10 +60,10 @@ namespace blazorblog
             services.AddServerSideBlazor();
             services.AddScoped<AuthenticationStateProvider, ServerAuthenticationStateProvider>();
 
-            services.AddScoped<BlogService>();
-            services.AddScoped<UserService>();
-            services.AddScoped<CategoryService>();
-            services.AddScoped<LogService>();
+            services.AddTransient<BlogService>();
+            services.AddTransient<UserService>();
+            services.AddTransient<CategoryService>();
+            services.AddTransient<LogService>();
             services.AddScoped<DisqusState>();
             services.AddScoped<BlogSearchState>();
             services.AddTransient<GlobalSettingService>();
